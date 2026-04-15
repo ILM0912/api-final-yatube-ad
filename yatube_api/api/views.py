@@ -26,11 +26,13 @@ class PostViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    pagination_class = None
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorOrReadOnly,)
+    pagination_class = None
 
     def get_queryset(self):
         post = get_object_or_404(Post, pk=self.kwargs['post_id'])
@@ -48,6 +50,7 @@ class FollowViewSet(mixins.CreateModelMixin,
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username',)
+    pagination_class = None
 
     def get_queryset(self):
         return self.request.user.follower.all()
